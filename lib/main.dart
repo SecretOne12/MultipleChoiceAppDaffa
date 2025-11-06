@@ -13,12 +13,12 @@ class QuizApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🎨 Palet warna utama
-    const Color olive = Color(0xFF8EA664); // 🌿 hijau olive
-    const Color lightGreen = Color(0xFFC6D4AC); // 🍃 hijau muda
-    const Color darkOlive = Color(0xFF5E6548); // 🌾 hijau gelap
-    const Color softWhite = Color(0xFFF3F1ED); // ☁️ putih keabu
-    const Color beige = Color(0xFFB5A793); // 🪵 krem coklat
+    //  Palet warna utama
+    const Color olive = Color(0xFF8EA664);
+    const Color lightGreen = Color(0xFFC6D4AC);
+    const Color darkOlive = Color(0xFF5E6548);
+    const Color softWhite = Color(0xFFF3F1ED);
+    const Color beige = Color(0xFFB5A793);
 
     final ThemeData theme = ThemeData(
       primaryColor: olive,
