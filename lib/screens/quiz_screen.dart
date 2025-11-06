@@ -22,7 +22,7 @@ class _QuizScreenState extends State<QuizScreen> {
       backgroundColor: const Color(0xFFC6D4AC), // #C6D4AC
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8EA664), // #8EA664
+        backgroundColor: const Color(0xFF8EA664),
         elevation: 0,
         title: Text(
           "Soalan gampang nieh",
@@ -37,6 +37,8 @@ class _QuizScreenState extends State<QuizScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            // --- Indikator nomor soal ---
             Text(
               "Soal ${quizState.currentIndex + 1} dari ${questions.length}",
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -47,12 +49,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
             const SizedBox(height: 15),
 
-            // ===== CARD SOAL =====
+            // --- Card soal ---
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F1ED), // #F3F1ED
+                color: const Color(0xFFF3F1ED),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
@@ -66,23 +68,22 @@ class _QuizScreenState extends State<QuizScreen> {
 
             const SizedBox(height: 24),
 
-            // ===== LIST PILIHAN =====
+            // --- List Pilihan Jawaban ---
             Expanded(
               child: ListView.builder(
                 itemCount: currentQuestion.options.length,
                 itemBuilder: (context, index) {
                   final optionText = currentQuestion.options[index];
-                  final isSelected = quizState.selectedAnswer == optionText;
+                  final isSelected = quizState.answers[quizState.currentIndex] == optionText;
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            vertical: size.width * 0.035),
+                        padding: EdgeInsets.symmetric(vertical: size.width * 0.035),
                         backgroundColor: isSelected
-                            ? const Color(0xFF8EA664) // aktif
-                            : const Color(0xFFB5A793), // tidak aktif
+                            ? const Color(0xFF8EA664)
+                            : const Color(0xFFB5A793),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18),
@@ -91,8 +92,8 @@ class _QuizScreenState extends State<QuizScreen> {
                       onPressed: () {
                         setState(() {
                           quizState.selectAnswer(
-                            optionText,                        // ✅ String answer
-                            currentQuestion.options[currentQuestion.correctIndex],      // ✅ String correct
+                            optionText,
+                            currentQuestion.options[currentQuestion.correctIndex],
                           );
                         });
                       },
@@ -108,40 +109,68 @@ class _QuizScreenState extends State<QuizScreen> {
 
             const SizedBox(height: 12),
 
-            // ===== BUTTON NEXT ATAU SELESAI =====
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8EA664), // tombol lanjut
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+            // --- Tombol Prev dan Next ---
+            Row(
+              children: [
+                // Tombol Sebelumnya
+                if (quizState.currentIndex > 0)
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFB5A793),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          quizState.previousQuestion();
+                        });
+                      },
+                      child: const Text(
+                        "Kembali",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+
+                if (quizState.currentIndex > 0) const SizedBox(width: 10),
+
+                // Tombol lanjut atau selesai
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF8EA664),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (quizState.currentIndex < questions.length - 1) {
+                        setState(() {
+                          quizState.nextQuestion();
+                        });
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ResultScreen(),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(
+                      quizState.currentIndex < questions.length - 1
+                          ? "Lanjut"
+                          : "Selesai",
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  if (quizState.currentIndex < questions.length - 1) {
-                    setState(() {
-                      quizState.nextQuestion();
-                    });
-                  } else {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ResultScreen(),
-                      ),
-                    );
-                  }
-                },
-                child: Text(
-                  quizState.currentIndex < questions.length - 1
-                      ? "Lanjut"
-                      : "Selesai",
-                  style: const TextStyle(fontSize: 20),
-                ),
-              ),
-            )
+              ],
+            ),
           ],
         ),
       ),
